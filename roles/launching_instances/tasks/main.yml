@@ -1,0 +1,78 @@
+---
+# tasks file for launching_instances
+#
+#
+    - name: Launching ec2-intances master
+      ec2_instance:
+              key_name: "{{ key_name_for_master }}"
+              instance_type: "{{ instance_type_of_master }}"
+              image_id: "{{ image_id_of_master }}"
+              tags:
+                      ansible: "mn"
+                      k8s: "master"
+              region: "{{ region_of_master_node }}" 
+              security_group: "{{ master_sg }}"
+              name: "{{ name_of_os }}"
+              state: present
+              aws_secret_key: "{{ secret_key_m1 }}"
+              aws_access_key: "{{ access_key_m1 }}"
+      register: x
+      become: true
+
+    - name: showing the ipv4
+      debug:
+              msg: "Public IP: {{ x['instances'][0]['network_interfaces'][0]['association']['public_ip'] }}"
+
+
+    - name: Launching ec2-intances node1
+      ec2_instance:
+              key_name: "{{ key_name_w1 }}"
+              instance_type: "{{ instance_type_w1 }}"
+              image_id: "{{ image_id_w1 }}"
+              tags:
+                      k8s: "node"
+                      ansible: "mn"
+                      nodes: "node1"
+              region: "{{ region_w1 }}"
+              security_group: "{{ sg_w1 }}"
+              name: "{{ name_w1 }}" 
+              state: present     
+              aws_secret_key: "{{ secret_key_w1 }}"
+              aws_access_key: "{{ access_key_w1 }}"
+      register: x
+      become: true
+
+
+    - name: showing the ipv4
+      debug:
+              msg: "Public IP: {{ x['instances'][0]['network_interfaces'][0]['association']['public_ip'] }}"
+
+
+    - name: Launching ec2-intances node2
+      ec2_instance:
+              key_name: "{{ key_name_w2 }}"
+              instance_type: "{{ instance_type_w2 }}" 
+              image_id: "{{ image_id_w2 }}"
+              tags:
+                      k8s: "node"
+                      ansible: "mn"
+                      nodes: "node2"
+              region: "{{ region_w2 }}" 
+              security_group: "{{ sg_w2 }}" 
+              name: "{{ name_w2 }}" 
+              state: present                 
+              aws_secret_key: "{{ secret_key_w2 }}"
+              aws_access_key: "{{ access_key_w2 }}"
+      register: x
+      become: true
+
+    - name: showing the ipv4
+      debug:
+              msg: "Public IP: {{ x['instances'][0]['network_interfaces'][0]['association']['public_ip'] }}"
+
+    - name: wait for 120 seconds
+      pause:
+              seconds:  120
+
+    - name: meta at work
+      meta: refresh_inventory

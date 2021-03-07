@@ -1,0 +1,16 @@
+---
+# tasks file for docker
+#
+#
+          - name: installing docker, iproute-tc
+            yum:
+                    name: docker
+                    state: present
+            become: true
+
+
+
+          - name: enabling docker
+            command: systemctl enable docker --now
+            become: true
+

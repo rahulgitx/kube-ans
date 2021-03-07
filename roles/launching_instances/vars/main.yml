@@ -1,0 +1,39 @@
+---
+# vars file for launching_instances
+#
+
+
+
+key_name_for_master: "nudekey2"          
+instance_type_of_master: "t2.micro"       
+image_id_of_master: "ami-08e0ca9924195beba"    
+region_of_master_node: "ap-south-1"      
+master_sg:  "sg-0ba8307df7f404509"      
+name_of_os: "os1"                        
+secret_key_m1: " your secret key "
+access_key_m1: " your access key "
+
+
+
+
+key_name_w1: "nudekey2"                          
+instance_type_w1: "t2.micro"                       
+image_id_w1: "ami-08e0ca9924195beba"          
+region_w1: "ap-south-1"
+sg_w1: "sg-0ba8307df7f404509"                      
+name_w1: "os2"                                  
+secret_key_w1: " your secret key"
+access_key_w1: " your access key "
+
+
+
+key_name_w2: "nudekey2"                     
+instance_type_w2: "t2.micro"                       
+image_id_w2: "ami-08e0ca9924195beba"
+region_w2: "ap-south-1"
+sg_w2: "sg-0ba8307df7f404509"                       
+name_w2: "os3"                                    
+secret_key_w2: " your secret key "
+access_key_w2: " your access key "
+
+

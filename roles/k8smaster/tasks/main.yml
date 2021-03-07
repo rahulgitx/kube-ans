@@ -1,0 +1,130 @@
+---
+# tasks file for k8s
+#
+#
+
+          - name: installing docker, iproute-tc
+            yum:
+                    name:
+                            - docker
+                            - iproute-tc
+                    state: present
+            become: true
+
+
+
+          - name: enabling docker
+            command: systemctl enable docker --now
+            become: true
+
+
+
+          - name: adding kubernetes repo file
+            yum_repository:
+                    name: kubernetes
+                    description: kubernetes
+                    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+                    enabled: 1
+                    gpgcheck: 1
+                    repo_gpgcheck: 1
+                    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg  https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+                    exclude: kubelet kubeadm kubectl
+            become: true
+
+
+
+          - name: downloading kubeadm, kubelet, kubectl
+            command: yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+            become: true
+
+
+
+          - name: enabling kubelet
+            command: systemctl enable kubelet --now
+            become: true
+
+
+
+          - name: dowloading images
+            command: kubeadm config images pull
+            become: true
+            ignore_errors: yes
+ 
+
+
+
+
+          - name: copying file for setting cgroup drivers as systemd
+            copy:
+                    src: /home/ec2-user/daemon.json
+                    dest: /etc/docker/daemon.json
+            become: true
+
+
+
+          - name: enabling docker
+            service:
+                   name: docker
+                   state: restarted
+            become: true
+
+
+
+          - name: creating k8s.conf file
+            copy:
+                    src: /home/ec2-user/conf
+                    dest: /etc/sysctl.d/k8s.conf
+            become: true
+
+
+          - name: running systl command
+            command: sysctl --system
+            become: true
+
+
+
+          - name: running kubernetes init command
+            command: kubeadm init --pod-network-cidr=10.240.0.0/16 --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
+            register: x
+            become: true
+            ignore_errors: yes
+
+
+
+          - name: making mster the client1  mkdir -p $HOME/.kube
+            command: mkdir -p $HOME/.kube
+            become: true
+
+
+          - name: making mster the client2  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+            command: cp  /etc/kubernetes/admin.conf $HOME/.kube/config
+            become: true
+
+          - name: making mster the client3  chown $(id -u):$(id -g) $HOME/.kube/config
+            raw: "sudo  chown $(id -u):$(id -g) $HOME/.kube/config"
+            become: true
+            ignore_errors: yes
+
+
+
+          - name: flannel conf
+            raw: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+            become: true
+            ignore_errors: yes
+
+          - name: creating token
+            command: kubeadm token create --print-join-command
+            register: x
+            become: true
+
+          - name: showing output
+            debug:
+               msg: "{{ x['stdout_lines'][0] }}"
+
+          - name: adding token command in dummy variable
+            add_host:
+                    name: "k8s_token"
+                    token: "{{ x['stdout_lines'][0] }}"
+
+
+

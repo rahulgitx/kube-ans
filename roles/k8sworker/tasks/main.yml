@@ -51,7 +51,12 @@
 
           - name: copying file for setting cgroup drivers as systemd
             copy:
-                    src: /home/ec2-user/daemon.json
+                    content: '''
+                              {
+                                     "exec-opts": ["native.cgroupdriver=systemd"]
+                              }
+                             '''
+
                     dest: /etc/docker/daemon.json
             become: true
 
@@ -67,7 +72,10 @@
 
           - name: creating k8s.conf file
             copy:
-                    src: /home/ec2-user/conf
+                    content: '''
+                              net.bridge.bridge-nf-call-ip6tables = 1
+                              net.bridge.bridge-nf-call-iptables = 1
+                             '''
                     dest: /etc/sysctl.d/k8s.conf
             become: true
 

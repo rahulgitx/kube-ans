@@ -110,7 +110,7 @@
             become: true
 
           - name: making mster the client3  chown $(id -u):$(id -g) $HOME/.kube/config
-            raw: "sudo  chown $(id -u):$(id -g) $HOME/.kube/config"
+            shell: "sudo  chown $(id -u):$(id -g) $HOME/.kube/config"
             become: true
             ignore_errors: yes
 

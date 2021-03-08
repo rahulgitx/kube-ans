@@ -12,7 +12,7 @@ For **quick configuration** just download all of these files in your local folde
 * Make sure you have the .pem file of the key in your same folder where you'll the main.yml file.
 * Add the name of your private key in the ansconf line 137.
 * Run ```ansible-playbook main.yml```
-* For more details follow [this article](www.medium "how to configure")
+* For more details follow [this article](https://rahul18bhardwaj-23.medium.com/ansible-role-to-configure-k8s-multi-node-cluster-over-aws-cloud-3bf86fe4b030 "how to configure")
 * The instances are made with specific tags to interact with so while making the main.yml file keep in mind to not making deviation from the following logic:
 ```
  - hosts: localhost
